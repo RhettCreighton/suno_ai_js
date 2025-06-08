@@ -4,16 +4,23 @@ A powerful bookmarklet for downloading MP3s from Suno AI.
 
 ## 🚀 Quick Install
 
-**Smart Bookmarklet - Finds ALL your songs:**
+**Simple Working Bookmarklet:**
 
 ```
-javascript:(function(){let f=new Set(),p=0;const o=new MutationObserver(()=>{document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&f.add(a.src)});const n=f.size;if(n>p){console.log(`Found ${n} songs`);p=n}});o.observe(document.body,{childList:!0,subtree:!0});document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&f.add(a.src)});const s=()=>{const a=Array.from(f);if(!a.length){alert('No songs found! Try: 1) Navigate to your library 2) Scroll down to load songs 3) Play some songs');return}if(confirm(`Found ${a.length} songs. Open all in tabs?`)){a.forEach((u,i)=>{setTimeout(()=>window.open(u,'_blank'),i*1000)})}};alert(`Suno Scanner Active!\n\nCurrent songs: ${f.size}\n\n1. Scroll down to load more songs\n2. Play songs to capture URLs\n3. Click bookmark again to download`);window.sunoScan=s;if(f.size>0)s()})();
+javascript:(function(){var s=[];document.querySelectorAll('audio').forEach(function(a){if(a.src&&a.src.includes('.mp3')){s.push(a.src)}});if(s.length==0){alert('No songs found! Try playing some songs first.');return}if(confirm('Found '+s.length+' songs. Download?')){s.forEach(function(u,i){setTimeout(function(){window.open(u)},i*1000)})}})();
 ```
 
-This bookmarklet:
-- Continuously monitors for new songs as you scroll
-- Shows how many songs are found
-- Click the bookmark again after scrolling to download all
+## 📋 Easy Console Method (Recommended)
+
+1. Go to suno.com/me (your library)
+2. Open Firefox Console (F12)
+3. Copy and paste the ENTIRE contents of `paste_in_console.js` from this repo
+4. An orange download button will appear if songs are found
+
+The console script:
+- Shows exactly how many songs are found
+- Creates a download button
+- Provides helpful tips if no songs are found
 
 ### 🎯 Best Method: Advanced Scanner (Console)
 

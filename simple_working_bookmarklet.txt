@@ -1,0 +1,1 @@
+javascript:(function(){var s=[];document.querySelectorAll('audio').forEach(function(a){if(a.src&&a.src.includes('.mp3')){s.push(a.src)}});if(s.length==0){alert('No songs found! Try playing some songs first.');return}if(confirm('Found '+s.length+' songs. Download?')){s.forEach(function(u,i){setTimeout(function(){window.open(u)},i*1000)})}})();
