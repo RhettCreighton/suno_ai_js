@@ -1,0 +1,1 @@
+javascript:(async()=>{try{const r=await fetch('https://raw.githubusercontent.com/RhettCreighton/suno_ai_js/main/suno_downloader.js'),s=await r.text(),e=document.createElement('script');e.textContent=s;document.head.appendChild(e)}catch(e){alert('Failed to load Suno Downloader: '+e.message)}})();
