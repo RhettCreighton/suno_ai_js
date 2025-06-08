@@ -4,46 +4,34 @@ A powerful bookmarklet for downloading MP3s from Suno AI.
 
 ## 🚀 Quick Install
 
-**Copy this ENTIRE line and create a bookmark with it:**
+**Smart Bookmarklet - Finds ALL your songs:**
 
 ```
-javascript:(function(){const u=new Set();document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&u.add(a.src)});const m=document.body.innerHTML.match(/https:\/\/cdn[^"'\s]*\.mp3/g);m&&m.forEach(url=>u.add(url));const a=Array.from(u);if(!a.length){alert('No songs found! Play some songs first.');return}if(confirm(`Found ${a.length} songs. Open all in new tabs?`)){a.forEach((url,i)=>{setTimeout(()=>window.open(url,'_blank'),i*1000)})}})();
+javascript:(function(){let f=new Set(),p=0;const o=new MutationObserver(()=>{document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&f.add(a.src)});const n=f.size;if(n>p){console.log(`Found ${n} songs`);p=n}});o.observe(document.body,{childList:!0,subtree:!0});document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&f.add(a.src)});const s=()=>{const a=Array.from(f);if(!a.length){alert('No songs found! Try: 1) Navigate to your library 2) Scroll down to load songs 3) Play some songs');return}if(confirm(`Found ${a.length} songs. Open all in tabs?`)){a.forEach((u,i)=>{setTimeout(()=>window.open(u,'_blank'),i*1000)})}};alert(`Suno Scanner Active!\n\nCurrent songs: ${f.size}\n\n1. Scroll down to load more songs\n2. Play songs to capture URLs\n3. Click bookmark again to download`);window.sunoScan=s;if(f.size>0)s()})();
 ```
 
-### Alternative: Advanced Downloader (Paste in Console)
+This bookmarklet:
+- Continuously monitors for new songs as you scroll
+- Shows how many songs are found
+- Click the bookmark again after scrolling to download all
 
-If the bookmarklet doesn't work due to CORS restrictions, paste this in the Firefox console (F12):
+### 🎯 Best Method: Advanced Scanner (Console)
+
+For finding ALL your songs, paste this in Firefox console (F12):
 
 ```javascript
-(async function() {
-    console.log('🎵 Suno Downloader Starting...');
-    const urls = new Set();
-    
-    // Find all MP3 URLs
-    document.querySelectorAll('audio').forEach(a => {
-        if (a.src && a.src.includes('.mp3')) urls.add(a.src);
-    });
-    
-    // Find CDN URLs in page
-    const matches = document.body.innerHTML.match(/https:\/\/cdn[^"'\s]*\.mp3/g);
-    if (matches) matches.forEach(url => urls.add(url));
-    
-    const mp3s = Array.from(urls);
-    if (!mp3s.length) {
-        alert('No songs found! Play some songs first.');
-        return;
-    }
-    
-    console.log(`Found ${mp3s.length} songs:`, mp3s);
-    
-    // Download each MP3
-    for (let i = 0; i < mp3s.length; i++) {
-        console.log(`Opening song ${i+1}/${mp3s.length}`);
-        window.open(mp3s[i], '_blank');
-        await new Promise(r => setTimeout(r, 1000));
-    }
-})();
+fetch('https://raw.githubusercontent.com/RhettCreighton/suno_ai_js/main/advanced_scanner.js').then(r=>r.text()).then(eval).catch(()=>alert('Load the script manually from the repo'));
 ```
+
+This loads an advanced scanner with:
+- Real-time song detection
+- Auto-play feature to load MP3 URLs
+- Download manager
+- Progress tracking
+
+### Manual Console Script
+
+If the above doesn't work, copy the contents of `advanced_scanner.js` from this repo and paste directly in console.
 
 ### How to create the bookmark:
 1. Copy the code above
