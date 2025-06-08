@@ -1,13 +1,13 @@
-# Suno AI Downloader - Hot Updatable
+# Suno AI Downloader
 
-A powerful bookmarklet for downloading MP3s from Suno AI that always loads the latest version from GitHub.
+A powerful bookmarklet for downloading MP3s from Suno AI.
 
 ## 🚀 Quick Install
 
-**Copy this code and create a bookmark with it:**
+**Copy this ENTIRE code block and create a bookmark with it:**
 
 ```javascript
-javascript:(async()=>{try{const r=await fetch('https://raw.githubusercontent.com/RhettCreighton/suno_ai_js/main/suno_downloader.js'),s=await r.text(),e=document.createElement('script');e.textContent=s;document.head.appendChild(e)}catch(e){alert('Failed to load Suno Downloader: '+e.message)}})();
+javascript:(function(){if(window.sunoDownloaderActive){window.runSunoDownload();return}window.sunoDownloaderActive=!0;window.capturedURLs=new Set();window.downloadedURLs=new Set();const a=window.fetch;window.fetch=function(...b){const c=b[0];'string'==typeof c&&c.includes('.mp3')&&window.capturedURLs.add(c);return a.apply(this,b)};function showProgress(b,c=0){let a=document.getElementById('suno-dl-overlay');a||(a=document.createElement('div'),a.id='suno-dl-overlay',a.style.cssText='position:fixed;top:20px;right:20px;background:#1a1a1a;color:white;padding:20px 30px;border-radius:10px;box-shadow:0 4px 6px rgba(0,0,0,0.3);z-index:999999;font-family:Arial,sans-serif;font-size:16px;border:2px solid #ff6600;',document.body.appendChild(a));a.textContent=b;a.style.display='block';0<c&&setTimeout(()=>a.style.display='none',c)}window.runSunoDownload=async function(){showProgress('🔍 Scanning for songs...');document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&window.capturedURLs.add(a.src)});if(0===window.capturedURLs.size){showProgress('▶️ Auto-playing songs...');const a=[...document.querySelectorAll('button[aria-label*="Play"],button[aria-label*="play"],button:has(svg path[d*="M8 5v14l11-7z"])')];for(let b=0;b<Math.min(a.length,15);b++)null!==a[b].offsetParent&&(a[b].click(),await new Promise(c=>setTimeout(c,3E3)),a[b].click(),await new Promise(c=>setTimeout(c,500)));document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&window.capturedURLs.add(a.src)})}const a=Array.from(window.capturedURLs).filter(a=>!window.downloadedURLs.has(a));0===a.length?showProgress('❌ No new songs found!',3E3):(showProgress(`📥 Downloading ${a.length} songs...`),a.forEach((b,c)=>{setTimeout(()=>{const d=document.createElement('a');d.href=b;d.download=`suno_${Date.now()}_${c+1}.mp3`;document.body.appendChild(d);d.click();document.body.removeChild(d);window.downloadedURLs.add(b);const e=a.length-c-1;0<e?showProgress(`📥 Downloading... ${e} remaining`):showProgress(`✅ Downloaded ${a.length} songs!`,5E3)},1500*c)}))};window.runSunoDownload()})();
 ```
 
 ### How to create the bookmark:
@@ -73,9 +73,9 @@ window.sunoDownloaderV2.scanAudioElements()
 - `suno_mp3_downloader.js` - Legacy standalone version
 - `suno_quick_scanner.js` - Simple scanner tool for listing songs
 
-## 🔄 Updating
+## 🔄 Note About External Scripts
 
-The beauty of this system is that you never need to update your bookmark! When I push updates to `suno_downloader.js`, your bookmark will automatically load the latest version.
+Due to browser security policies, loading scripts from GitHub raw URLs is blocked. The bookmarklet above contains the entire script embedded, so it works immediately without external dependencies.
 
 ## License
 
