@@ -7,7 +7,42 @@ A powerful bookmarklet for downloading MP3s from Suno AI.
 **Copy this ENTIRE line and create a bookmark with it:**
 
 ```
-javascript:(function(){if(window.sunoDownloaderActive){window.runSunoDownload();return}window.sunoDownloaderActive=true;window.capturedURLs=new Set();window.downloadedURLs=new Set();const originalFetch=window.fetch;window.fetch=function(...args){const url=args[0];if(typeof url==='string'&&url.includes('.mp3')){window.capturedURLs.add(url);console.log('Captured:',url)}return originalFetch.apply(this,args)};function showProgress(msg,autoHide=0){let overlay=document.getElementById('suno-dl-overlay');if(!overlay){overlay=document.createElement('div');overlay.id='suno-dl-overlay';overlay.style.cssText='position:fixed;top:20px;right:20px;background:#1a1a1a;color:white;padding:20px 30px;border-radius:10px;box-shadow:0 4px 6px rgba(0,0,0,0.3);z-index:999999;font-family:Arial,sans-serif;font-size:16px;border:2px solid #ff6600;';document.body.appendChild(overlay)}overlay.textContent=msg;overlay.style.display='block';if(autoHide>0){setTimeout(()=>overlay.style.display='none',autoHide)}}window.runSunoDownload=async function(){showProgress('🔍 Scanning for songs...');document.querySelectorAll('audio').forEach(audio=>{if(audio.src&&audio.src.includes('.mp3')){window.capturedURLs.add(audio.src)}});if(window.capturedURLs.size===0){showProgress('▶️ Auto-playing songs...');const playBtns=[...document.querySelectorAll('button[aria-label*="Play"],button[aria-label*="play"]')];for(let i=0;i<Math.min(playBtns.length,15);i++){if(playBtns[i]&&playBtns[i].offsetParent!==null){playBtns[i].click();await new Promise(r=>setTimeout(r,3000));playBtns[i].click();await new Promise(r=>setTimeout(r,500))}}document.querySelectorAll('audio').forEach(audio=>{if(audio.src&&audio.src.includes('.mp3')){window.capturedURLs.add(audio.src)}})}const newURLs=Array.from(window.capturedURLs).filter(url=>!window.downloadedURLs.has(url));if(newURLs.length===0){showProgress('❌ No new songs found!',3000);return}showProgress(`📥 Downloading ${newURLs.length} songs...`);newURLs.forEach((url,idx)=>{setTimeout(()=>{const a=document.createElement('a');a.href=url;a.download=`suno_${Date.now()}_${idx+1}.mp3`;document.body.appendChild(a);a.click();document.body.removeChild(a);window.downloadedURLs.add(url);const remaining=newURLs.length-idx-1;if(remaining>0){showProgress(`📥 Downloading... ${remaining} remaining`)}else{showProgress(`✅ Downloaded ${newURLs.length} songs!`,5000)}},idx*1500)})};window.runSunoDownload()})();
+javascript:(function(){const u=new Set();document.querySelectorAll('audio').forEach(a=>{a.src&&a.src.includes('.mp3')&&u.add(a.src)});const m=document.body.innerHTML.match(/https:\/\/cdn[^"'\s]*\.mp3/g);m&&m.forEach(url=>u.add(url));const a=Array.from(u);if(!a.length){alert('No songs found! Play some songs first.');return}if(confirm(`Found ${a.length} songs. Open all in new tabs?`)){a.forEach((url,i)=>{setTimeout(()=>window.open(url,'_blank'),i*1000)})}})();
+```
+
+### Alternative: Advanced Downloader (Paste in Console)
+
+If the bookmarklet doesn't work due to CORS restrictions, paste this in the Firefox console (F12):
+
+```javascript
+(async function() {
+    console.log('🎵 Suno Downloader Starting...');
+    const urls = new Set();
+    
+    // Find all MP3 URLs
+    document.querySelectorAll('audio').forEach(a => {
+        if (a.src && a.src.includes('.mp3')) urls.add(a.src);
+    });
+    
+    // Find CDN URLs in page
+    const matches = document.body.innerHTML.match(/https:\/\/cdn[^"'\s]*\.mp3/g);
+    if (matches) matches.forEach(url => urls.add(url));
+    
+    const mp3s = Array.from(urls);
+    if (!mp3s.length) {
+        alert('No songs found! Play some songs first.');
+        return;
+    }
+    
+    console.log(`Found ${mp3s.length} songs:`, mp3s);
+    
+    // Download each MP3
+    for (let i = 0; i < mp3s.length; i++) {
+        console.log(`Opening song ${i+1}/${mp3s.length}`);
+        window.open(mp3s[i], '_blank');
+        await new Promise(r => setTimeout(r, 1000));
+    }
+})();
 ```
 
 ### How to create the bookmark:
